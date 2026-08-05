@@ -1,0 +1,48 @@
+# Treadle pump specification
+environment:
+  gravity: 9.81                  # m/s^2, acting along -y
+
+lever:
+  # Rigid body rotating about the fixed pivot at the origin.
+  # Angular position is measured from the +x axis, positive anticlockwise.
+  pivot_to_joint: 0.215          # m, pivot to the centre of the joint bore
+  overall_length: 0.820          # m, tip to tip
+  # Centre of mass lies on the lever axis, measured from the pivot.
+  # A negative value places it on the opposite side of the pivot from
+  # the joint — which is where the pedal and the operator's weight sit.
+  centre_of_mass: -0.200         # m  
+  mass: 2.88                     # kg
+  inertia_zz: 0.192              # kg m^2, about the centre of mass
+
+connecting_rod:
+  # Rigid body. Angular position measured from the +x axis, positive
+  # anticlockwise. The rod runs from the piston pin to the joint pin.
+  length: 0.230                  # m, piston pin to joint pin
+  # Centre of mass lies on the rod axis, measured from the piston pin.
+  centre_of_mass: 0.112          # m
+  mass: 0.314                    # kg  
+  inertia_zz: 1.29e-3            # kg m^2, about the centre of mass
+
+piston:
+  mass: 0.284                    # kg
+  travel_axis_x: 0.215           # m
+
+clearance_joint:
+  bore_radius: 0.010             # m, in the lever
+  pin_radius: 0.009              # m, on the rod
+  contact: elastic-hertzian-undamped
+  youngs_modulus: 2.07e+11       # Pa, both parts
+  poisson_ratio: 0.30            # both parts
+
+loads:
+  # Constant through the stroke.
+  pedal_torque: 40.0             # N m, applied to the lever about the pivot,
+                                 #      positive anticlockwise
+  piston_load: 183.0             # N, resisting the piston, acting along -y.
+                                 #    Corresponds to a 3 m suction head.
+
+stroke:
+  lever_angle_start: -15.0       # deg, from the +x axis
+  lever_angle_end: 15.0          # deg
+  initial_velocities: 0.0        # all joint rates are zero at t = 0
+  time_limit: 0.5                # s. 

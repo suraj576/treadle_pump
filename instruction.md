@@ -10,6 +10,8 @@ F = sqrt( mean( (e - c)^2 ) )
 
 Treadle pump geometry, link properties, material data, the applied loads and the stroke definition are in /app/data/pump_specification.yaml. Bore and journal radii are both given; their difference is the radial clearance.
 
+Mass of the links and centre of mass location can be changed within the ranges mentioned in /app/data/design_bounds.csv.
+
 Write to /app/output/:
 
 

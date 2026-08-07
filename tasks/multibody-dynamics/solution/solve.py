@@ -50,36 +50,20 @@ def particle_swarm(cost, lo, hi, seed, n=30, iters=30):
             stall += 1; nbr = min(nbr + base_nbr, n - 1)
         w = min(2 * w, 1.1) if stall < 2 else (max(w / 2, 0.1) if stall > 5 else w)
     return best, bestf, P, PF
-
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     M = model.load_machine(str(DATA / "pump_specification.yaml"))
     names, lo, hi = read_bounds(DATA / "design_bounds.csv")
 
-    
-    rows = []
-    for r in csv.DictReader(open(DATA / "evaluation_designs.csv")):
-        v = [float(r[k]) for k in names]
-        F, peak, dur, ok = model.evaluate(M, v)
-        rows.append((r["id"], F, peak, dur, ok))
-    with open(OUT / "design_response.csv", "w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["id", "objective", "peak_penetration", "stroke_duration"])
-        for cid, F, peak, dur, ok in rows:
-            w.writerow([cid, f"{F:.10e}", f"{peak:.10e}", f"{dur:.10e}"])
-    print(f"design_response.csv: {len(rows)} designs")
-
     baseline = model.stroke(M)[0]
     print(f"as-built machine: F = {baseline:.6e}")
 
-   
     def cost(v):
-        F, _, _, ok = model.evaluate(M, v)
+        F, _, ok = model.evaluate(M, v)
         return 1e6 if not ok or not np.isfinite(F) else F
 
     best, bestf, P, PF = particle_swarm(cost, lo, hi, SEED)
     print(f"swarm best: F = {bestf:.6e}  ({100 * bestf / baseline:.0f}% of as-built)")
-
 
     order = [i for i in np.argsort(PF)[:8] if PF[i] < 1e5]
     scored = []
@@ -94,15 +78,11 @@ def main():
         vals = [x for x in vals if np.isfinite(x)]
         if not vals:
             continue
-        scored.append((float(min(vals)), float(PF[i]), v))
+        scored.append((float(min(vals)), v))
 
     scored.sort(key=lambda r: r[0])
-    if scored:
-        typical, at_nominal, v = scored[0]
-    else:
-        typical, at_nominal, v = bestf, bestf, best
-    worst_case = typical
-    F, peak, dur, ok = model.evaluate(M, v)
+    typical, v = scored[0] if scored else (bestf, best)
+    F, dur, ok = model.evaluate(M, v)
     print(f"chosen design: F = {F:.6e}  typical over neighbourhood {typical:.6e}"
           f"  ({100 * typical / baseline:.0f}% of as-built)")
 
@@ -111,7 +91,7 @@ def main():
               open(OUT / "optimised_design.json", "w"), indent=2)
 
 
-
 if __name__ == "__main__":
     with np.errstate(over="ignore", invalid="ignore"):
         main()
+

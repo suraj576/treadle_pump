@@ -42,7 +42,7 @@ class Machine:
     return np.array([self.m1, self.d1, self.I1, self.m3, self.d3, self.I3])
 
 
-  def load_machine(path: str) -> Machine:
+def load_machine(path: str) -> Machine:
     with open(path) as fh:
         s = yaml.safe_load(fh)
     f = float
@@ -63,8 +63,8 @@ class Machine:
         t_max=f(st["time_limit"]),
     )
 
-    def make_rhs(M: Machine):
-    """Bind constants once; returns f(y) -> tuple of 6 derivatives."""
+
+def make_rhs(M: Machine):
     g, a1, a3, m2 = M.g, M.a1, M.a3, M.m2
     m1, d1, I1 = M.m1, M.d1, M.I1
     m3, d3, I3 = M.m3, M.d3, M.I3
@@ -99,17 +99,18 @@ class Machine:
                 (i33 * T1 - i23 * T2) / det,
                 (i22 * T2 - i23 * T1) / det)
 
-      return f
+    return f
 
-    def stroke(M: Machine, step: float = STEP):
-      f = make_rhs(M)
-      h, c = step, M.c
-      a1, a3 = M.a1, M.a3
-      y = M.initial_state()
-      n = int(M.t_max / h)
-      ssq = 0.0; cnt = 0; peak = -np.inf; t = 0.0
 
-      for k in range(n):
+def stroke(M: Machine, step: float = STEP):
+    f = make_rhs(M)
+    h, c = step, M.c
+    a1, a3 = M.a1, M.a3
+    y = M.initial_state()
+    n = int(M.t_max / h)
+    ssq = 0.0; cnt = 0; peak = -np.inf; t = 0.0
+
+    for k in range(n):
         dx = a1 * math.cos(y[0]) - a1 - a3 * math.cos(y[2])
         dy = a1 * math.sin(y[0]) - y[1] - a3 * math.sin(y[2])
         d = math.hypot(dx, dy) - c
@@ -128,7 +129,7 @@ class Machine:
             return np.nan, np.nan, t, False
         t += h
 
-      return np.nan, np.nan, M.t_max, False
+    return np.nan, np.nan, M.t_max, False
 
 
 def evaluate(M: Machine, v, step: float = STEP):

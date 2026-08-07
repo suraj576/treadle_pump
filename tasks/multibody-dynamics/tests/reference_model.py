@@ -89,7 +89,7 @@ def stroke(p, design, step=STEP):
         ssq += pen * pen
         cnt += 1
         if q[0] >= p["th1_end"]:
-            return math.sqrt(ssq / cnt), peak, t, True
+            return math.sqrt(ssq / cnt), t, True
         try:
             k1 = _derivs(q, p, d)
             k2 = _derivs(q + 0.5 * h * k1, p, d)

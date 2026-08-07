@@ -53,7 +53,6 @@ def _derivs(q, p, d):
     dx, dy, e = offset(q, p)
     delta = e - p["c"]
     if delta > 0.0 and e > 0.0:
-        # unit normal along the line of centres; force opposes the offset
         Fn = p["K"] * delta ** 1.5
         Fx, Fy = -Fn * dx / e, -Fn * dy / e
     else:
@@ -89,7 +88,6 @@ def stroke(p, design, step=STEP):
         pen = offset(q, p)[2] - p["c"]
         ssq += pen * pen
         cnt += 1
-        peak = max(peak, pen)
         if q[0] >= p["th1_end"]:
             return math.sqrt(ssq / cnt), peak, t, True
         try:

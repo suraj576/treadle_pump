@@ -79,12 +79,11 @@ def _derivs(q, p, d):
 def stroke(p, design, step=STEP):
     d = np.asarray(design, float)
     if d[4] == 0.0:
-        return np.nan, np.nan, 0.0, False
+        return np.nan, 0.0, False
     q = initial_state(p)
     h, n = step, int(p["t_max"] / step)
     ssq = 0.0
     cnt = 0
-    peak = -np.inf
     t = 0.0
     for _ in range(n):
         pen = offset(q, p)[2] - p["c"]
@@ -100,11 +99,11 @@ def stroke(p, design, step=STEP):
             k4 = _derivs(q + h * k3, p, d)
             q = q + (h / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
         except (ValueError, OverflowError, ZeroDivisionError, np.linalg.LinAlgError):
-            return np.nan, np.nan, t, False
+            return np.nan, t, False
         if not np.isfinite(q).all():
-            return np.nan, np.nan, t, False
+            return np.nan, t, False
         t += h
-    return np.nan, np.nan, p["t_max"], False
+    return np.nan, p["t_max"], False
 
 
 def neighbourhood_best(p, design, pct=0.02):

@@ -108,7 +108,7 @@ def neighbourhood_best(p, design, pct=0.02):
     d = np.asarray(design, float)
     vals = []
     for cand in [d] + [_bump(d, i, s, pct) for i in range(6) for s in (-1.0, 1.0)]:
-        F, _, _, ok = stroke(p, cand)
+        F, _, ok = stroke(p, cand)
         if ok and np.isfinite(F):
             vals.append(F)
     return min(vals) if vals else np.nan

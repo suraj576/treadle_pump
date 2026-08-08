@@ -115,8 +115,6 @@ def stroke(M: Machine, step: float = STEP):
         dy = a1 * math.sin(y[0]) - y[1] - a3 * math.sin(y[2])
         d = math.hypot(dx, dy) - c
         ssq += d * d; cnt += 1
-        if d > peak:
-            peak = d
         if y[0] >= M.th_end:
             return math.sqrt(ssq / cnt), peak, t, True
         try:
@@ -124,12 +122,12 @@ def stroke(M: Machine, step: float = STEP):
             k3 = np.asarray(f(y + 0.5 * h * k2)); k4 = np.asarray(f(y + h * k3))
             y = y + (h / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
         except (ValueError, OverflowError, ZeroDivisionError):
-            return np.nan, np.nan, t, False
+            return np.nan, t, False
         if not np.isfinite(y[0]):
-            return np.nan, np.nan, t, False
+            return np.nan, t, False
         t += h
 
-    return np.nan, np.nan, M.t_max, False
+    return np.nan, M.t_max, False
 
 
 def evaluate(M: Machine, v, step: float = STEP):

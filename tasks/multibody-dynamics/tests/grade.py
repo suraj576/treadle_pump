@@ -77,13 +77,6 @@ def main():
     achieved = R.neighbourhood_best(spec, design)
     target = TARGET_FRACTION * baseline
 
-    say(f"as-built objective           {baseline:.6e}")
-    say(f"submitted design, recomputed {F_opt:.6e}   (claimed {claimed:.6e})")
-    say(f"best in its neighbourhood    {achieved:.6e}"
-        f"   = {100 * achieved / baseline:.0f}% of as-built,"
-        f" target <= {100 * TARGET_FRACTION:.0f}%")
-
-
     if ratio_off(claimed, F_opt) > TOL_CLAIM:
         fail(f"claimed objective {claimed:.4e} is not consistent with the "
              f"recomputed {F_opt:.4e}")

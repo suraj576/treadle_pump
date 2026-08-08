@@ -108,7 +108,7 @@ def stroke(M: Machine, step: float = STEP):
     a1, a3 = M.a1, M.a3
     y = M.initial_state()
     n = int(M.t_max / h)
-    ssq = 0.0; cnt = 0; peak = -np.inf; t = 0.0
+    ssq = 0.0; cnt = 0; t = 0.0
 
     for k in range(n):
         dx = a1 * math.cos(y[0]) - a1 - a3 * math.cos(y[2])
@@ -116,7 +116,7 @@ def stroke(M: Machine, step: float = STEP):
         d = math.hypot(dx, dy) - c
         ssq += d * d; cnt += 1
         if y[0] >= M.th_end:
-            return math.sqrt(ssq / cnt), peak, t, True
+            return math.sqrt(ssq / cnt), t, True
         try:
             k1 = np.asarray(f(y)); k2 = np.asarray(f(y + 0.5 * h * k1))
             k3 = np.asarray(f(y + 0.5 * h * k2)); k4 = np.asarray(f(y + h * k3))

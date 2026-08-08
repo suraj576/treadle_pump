@@ -1,1 +1,21 @@
+schema_version = "1.4"
 
+[task]
+name = "treadle-pump-mass-distribution"
+version = "1.0.0"
+description = "Redistribute the mass properties of a treadle pump's lever and connecting rod to minimise clearance-joint chatter over one pumping stroke."
+authors = [{ name = "Suraj Bhat", email = "suraj576@gmail.com" }]
+keywords = ["multibody-dynamics", "mechanical-engineering", "optimization", "clearance-joint"]
+
+[metadata]
+difficulty_explanation = "Requires deriving the equations of motion for a two-link mechanism including a clearance model. Integrating them over a full stroke, and optimizing the mass-inertia properties of the links to reduce jerks arising due to joint clearance."
+category = "mechanical-engineering"
+
+[verifier]
+timeout_sec = 300.0
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 600.0
